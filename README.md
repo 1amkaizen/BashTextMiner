@@ -12,7 +12,7 @@ cd BashTextMiner
 # Penggunaan
 
 ```
-./BashTextminer -s stop_words.txt RPJP_2005-2025.txt > output.txt
+./BashTextminer -s stop_words.txt -t 200 RPJP_2005-2025.txt > output.txt
 ```
 
 # 
