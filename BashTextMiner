@@ -1,33 +1,33 @@
 #!/bin/bash
 
 # Inisialisasi variabel
-stopwords=""
-
+stopwords=""                                                    
+kata=""
 # Mengambil argumen dengan flag
-while getopts "s:" opt; do
-  case $opt in
+while getopts "s:","t:" opt; do                                   
+case $opt in
     s)
       stopwords="$OPTARG"
       ;;
-    *)
-      echo "Usage: . /skrip.sh -s <stopwords_file> <namafile.txt>"
-      exit 1
+    t)
+      kata="$OPTARG"
       ;;
+    *)
+      echo "Usage: ./BashTextMiner -s <stopwords_file> -t <jumlah kata> <namafile.txt>"
+      exit 1                                                          
+;;
   esac
-done
-
+done                                                            
 # Geser argumen untuk mendapatkan file teks
 shift "$((OPTIND-1))"
-
 # Memeriksa jumlah argumen yang diberikan
-if [ "$#" -ne 1 ]; then
-  echo "Usage: . /skrip.sh -s <stopwords_file> <namafile.txt>"
+if [ "$#" -ne 1 ]; then                                           
+echo "Usage: ./BashTextMiner -s <stopwords_file> -t <jumlah kata>§<namafile.txt >"
   exit 1
 fi
 
 # File teks yang akan diproses
-file_path="$1"
-
+file_path="$1"                                                  
 # Memeriksa apakah file stopwords telah disediakan
 if [ -z "$stopwords" ]; then
   echo "Gunakan opsi -s untuk menyediakan file stopwords."
@@ -40,11 +40,18 @@ if [ ! -f "$stopwords" ]; then
   exit 1
 fi
 
+
+# Memeriksa apakah file jumlah kata  telah disediakan
+if [ -z "$kata" ]; then
+  echo "Gunakan opsi -t untuk jumlah kata."
+  exit 1
+fi
+
 # Menghapus kata-kata yang ada di stopwords dari teks
 filtered_words=$(tr -sc 'A-Za-z' '\n' < "$file_path" | tr '[:upper:]' '[:lower:]' | sort | uniq -c | sort -nr | grep -v -w -f "$stopwords")
 
 # Ambil 400 kata yang paling sering muncul
-top_words=$(echo "$filtered_words" | head -n 400)
+top_words=$(echo "$filtered_words" | head -n "$kata")
 
 # Menampilkan hasil
 echo -e "$top_words"
